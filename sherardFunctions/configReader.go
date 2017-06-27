@@ -52,12 +52,14 @@ type Security struct {
 	AccessToken string `json:"AccessToken"`
 }
 
-type MigrationInfo struct {
-	SchedulerTime  string `json:"SchedulerTime"`
-	Tenant  string `json:"Tenant"`
-	Companys  []string `json:"Companys"`
-	CompanysName  string `json:"CompanysName"`
+type Migration struct {
+	SchedulerTime      string `json:"SchedulerTime"`
+	Tenant        string `json:"Tenant"`
+	Company     string `json:"Company"`
+	NewProfileSp    string `json:"NewProfileSp"`
+	ProfileSp    string `json:"ProfileSp"`
 }
+
 
 type Configuration struct {
 	DB       DB       `json:"DB"`
@@ -65,7 +67,8 @@ type Configuration struct {
 	DBTWO    DBTWO       `json:"DBTWO"`
 	Host     Host     `json:"Host"`
 	Security Security `json:"Security"`
-	MigrationInfo MigrationInfo `json:"MigrationInfo"`
+	MigrationData []Migration `json:"MigrationData"`
+	MigrationDataLinux string `json:"MigrationDataLinux"`
 }
 
 func GetDirPath() string {
@@ -144,12 +147,10 @@ func LoadConfiguration() Configuration {
 		envConfig.Security.Ip = os.Getenv(envconfiguration.Security.Ip)
 		envConfig.Security.Port = os.Getenv(envconfiguration.Security.Port)
 
-		envConfig.MigrationInfo.Tenant = os.Getenv(envconfiguration.MigrationInfo.Tenant)
-		envConfig.MigrationInfo.SchedulerTime = os.Getenv(envconfiguration.MigrationInfo.SchedulerTime)
-		tempMigrationInfo := os.Getenv(envconfiguration.MigrationInfo.CompanysName)
-		var mInfo []string
-		json.Unmarshal([]byte(tempMigrationInfo), &mInfo)
-		envConfig.MigrationInfo.Companys = mInfo
+		dataString := os.Getenv(envconfiguration.MigrationDataLinux)
+		var mdata []Migration
+		json.Unmarshal([]byte(dataString), &mdata)
+		envConfig.MigrationData = mdata
 
 
 	}

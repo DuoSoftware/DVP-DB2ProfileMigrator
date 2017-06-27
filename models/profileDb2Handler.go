@@ -18,7 +18,7 @@ func MigrateProfile(uid uuid.UUID, query string, tenant int, company int) {
 
 	sherardFunctions.Block{
 		Try: func() {
-			s := fmt.Sprintf("Profile Migration. Get Profile From DB2. Process Start -> %s.  Tenant : %s , Company : %s ",uid,tenant,company)
+			s := fmt.Sprintf("Profile Migration. Get Profile From DB2. Process Start -> %s.  Tenant : %d , Company : %d ",uid,tenant,company)
 			fmt.Println(s)
 
 			db, err := sql.Open("db2-cli", *connStr)
@@ -77,11 +77,11 @@ func MigrateProfile(uid uuid.UUID, query string, tenant int, company int) {
 
 		},
 		Catch: func(e sherardFunctions.Exception) {
-			s := fmt.Sprintf("Profile Migration Process Fail -> %s.  Tenant : %s , Company : %s  %v\n",uid,tenant,company,e)
+			s := fmt.Sprintf("Profile Migration Process Fail -> %s.  Tenant : %d , Company : %d  %v\n",uid,tenant,company,e)
 			fmt.Println(s)
 		},
 		Finally: func() {
-			s := fmt.Sprintf("Profile Migration Process Complete -> %s.  Tenant : %s , Company : %s ",uid,tenant,company)
+			s := fmt.Sprintf("Profile Migration Process Complete -> %s.  Tenant : %d , Company : %d ",uid,tenant,company)
 			fmt.Println(s)
 		},
 	}.Do()

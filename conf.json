@@ -36,10 +36,21 @@
         "Port": "6379",
 		"AccessToken" : "hhj"
     },
-    "MigrationInfo": {
-        "SchedulerTime":"17:59",
-        "Tenant" : "1",
-        "Companys": ["103","107"],
-        "CompanysName": "[\"103\",\"107\"]"
-    }
+    "MigrationData": [
+        {
+            "SchedulerTime":"23:38",
+            "Tenant" : "1",
+            "Company": "103",
+            "NewProfileSp": "CALL NEWPROFILELIST();",
+            "ProfileSp": "CALL PROFILELIST();"
+        },
+        {
+            "SchedulerTime":"23:39",
+            "Tenant" : "1",
+            "Company": "103",
+            "NewProfileSp": "CALL NEWPROFILELIST();",
+            "ProfileSp": "CALL PROFILELIST();"
+        }
+    ],
+    "MigrationDataLinux": "[{\"SchedulerTime\":\"17:59\",\"Tenant\":\"1\",\"Company\":\"103\",\"NewProfileSp\":\"CALL NEWPROFILELIST();\",\"ProfileSp\":\"CALL PROFILELIST();\"},{\"SchedulerTime\":\"17:59\",\"Tenant\":\"1\",\"Company\":\"103\",\"NewProfileSp\":\"CALL NEWPROFILELIST();\",\"ProfileSp\":\"CALL PROFILELIST();\"}]"
 }

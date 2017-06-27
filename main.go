@@ -12,7 +12,6 @@ import (
 	"github.com/jasonlvhit/gocron"
 
 	"DVP-DB2ProfileMigrator/sherardFunctions"
-	"encoding/json"
 	"strconv"
 )
 
@@ -27,45 +26,56 @@ func main() {
 	wg.Add(1)
 
 	go forever()
+	for i := 0; i < len(config.MigrationData); i ++ {
+		migrateConfig :=config.MigrationData[i]
+		// also , you can create a your new scheduler,
+		// to run two scheduler concurrently
+		s := gocron.NewScheduler()
+		//s.Every(1).Minute().Do(migrateNewProfile)
+		s.Every(1).Day().At(migrateConfig.SchedulerTime).Do(migrateNewProfile,true) //'hour:min'
+		<-s.Start()
 
-	// also , you can create a your new scheduler,
-	// to run two scheduler concurrently
-	s := gocron.NewScheduler()
-	//s.Every(1).Minute().Do(migrateNewProfile)
-	s.Every(1).Day().At(config.MigrationInfo.SchedulerTime).Do(migrateNewProfile,true) //'hour:min'
-	<-s.Start()
+	}
+
 
 	//wg.Wait()
+}
+
+type Host struct {
+	SchedulerTime      string `json:"SchedulerTime"`
+	Tenant        string `json:"Tenant"`
+	Companys     string `json:"Companys"`
+	SpName    string `json:"SpName"`
 }
 
 func migrateNewProfile(newProfile bool) {
 
 	fmt.Println("Start Schedule task.")
 
-	var mInfo []string
-	json.Unmarshal([]byte(config.MigrationInfo.CompanysName), &mInfo)
+	mInfo :=config.MigrationData
 
-	query :="CALL PROFILELIST();"
-	if newProfile {
-		query ="CALL NEWPROFILELIST();"
-	} else {
-		query ="CALL PROFILELIST();"
-	}
+
 	for i := 0; i < len(mInfo); i ++ {
-
+		migrateConfig :=mInfo[i]
 		sherardFunctions.Block{
 			Try: func() {
+
+				query :=migrateConfig.ProfileSp
+				if newProfile {
+					query =migrateConfig.NewProfileSp
+				}
+
 				uid := uuid.NewV4()
-				t, _ := strconv.Atoi(config.MigrationInfo.Tenant)
-				c, _ := strconv.Atoi(mInfo[i])
+				t, _ := strconv.Atoi(migrateConfig.Tenant)
+				c, _ := strconv.Atoi(migrateConfig.Company)
 				go models.MigrateProfile(uid, query, t, c)
 			},
 			Catch: func(e sherardFunctions.Exception) {
-				s := fmt.Sprintf("Fail To Start Schedule Task. Tenant : %s , Company : %s ", config.MigrationInfo.Tenant, mInfo[i])
+				s := fmt.Sprintf("Fail To Start Schedule Task. Tenant : %s , Company : %s ", migrateConfig.Tenant, migrateConfig.Company)
 				fmt.Println(s)
 			},
 			Finally: func() {
-				s := fmt.Sprintf("Start Schedule Task, Profile Migrattion Process. Tenant : %s , Company : %s ", config.MigrationInfo.Tenant, mInfo[i])
+				s := fmt.Sprintf("Start Schedule Task, Profile Migrattion Process. Tenant : %s , Company : %s ", migrateConfig.Tenant,migrateConfig.Company)
 				fmt.Println(s)
 			},
 		}.Do()

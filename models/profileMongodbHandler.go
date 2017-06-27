@@ -39,7 +39,7 @@ type (
 
 func SaveProfilesToMongo(userProfiles []ExternalUsers, uid uuid.UUID, tenant int, company int) {
 
-	s := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Start -> %s.  Tenant : %s , Company : %s ", uid, tenant, company)
+	s := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Start -> %s.  Tenant : %d , Company : %d ", uid, tenant, company)
 	fmt.Println(s)
 
 	mongoDBDialInfo := &mgo.DialInfo{
@@ -66,7 +66,7 @@ func SaveProfilesToMongo(userProfiles []ExternalUsers, uid uuid.UUID, tenant int
 		tempProfile := userProfiles[i];
 		// check profile is existing
 		result := ExternalUsers{}
-		err = c.Find(bson.M{"threadpartyreference": tempProfile.ThreadPartyReference}).One(&result)
+		err = c.Find(bson.M{"threadpartyreference": tempProfile.ThreadPartyReference,"tenant":tenant,"company":company}).One(&result)
 
 		if err != nil {
 			switch err {
@@ -105,7 +105,7 @@ func SaveProfilesToMongo(userProfiles []ExternalUsers, uid uuid.UUID, tenant int
 		}
 */
 	}
-	ss := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Complete -> %s.  Tenant : %s , Company : %s ", uid, tenant, company)
+	ss := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Complete -> %s.  Tenant : %d , Company : %d ", uid, tenant, company)
 	fmt.Println(ss)
 }
 
@@ -120,7 +120,7 @@ func SaveProfiles(userProfiles []ExternalUsers, uid uuid.UUID, tenant int, compa
 			fmt.Printf("Caught %v\n", e)
 		},
 		Finally: func() {
-			s := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Completed. -> %s.  Tenant : %s , Company : %s ", uid, tenant, company)
+			s := fmt.Sprintf("Profile Migrattion. Save To MongoDb. Process Completed. -> %s.  Tenant : %d , Company : %d ", uid, tenant, company)
 			fmt.Println(s)
 		},
 	}.Do()
