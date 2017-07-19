@@ -44,14 +44,14 @@ func MigrateProfile(uid uuid.UUID, query string, tenant int, company int) {
 				var Email string
 				var Locale string
 				var Zipcode string
-				var ThreadPartyReference string
-				err = rows.Scan(&Title, &Firstname, &Lastname, &Name, &Gender, &Phone, &Email, &Locale, &Zipcode,&ThreadPartyReference)
+				var thirdpartyreference string
+				err = rows.Scan(&Title, &Firstname, &Lastname, &Name, &Gender, &Phone, &Email, &Locale, &Zipcode,&thirdpartyreference)
 				if err != nil {
 					sherardFunctions.Throw(err)
 				}
 
 				profile := ExternalUsers{
-					ThreadPartyReference:ThreadPartyReference,
+					thirdpartyreference:thirdpartyreference,
 					Tenant :tenant,
 					Company :company,
 					Title:Title,
