@@ -21,7 +21,7 @@ type (
 	}
 
 	ExternalUsers struct {
-		thirdpartyreference string
+		ThirdPartyReference string
 		Tenant               int
 		Company              int
 		Title                string
@@ -66,7 +66,7 @@ func SaveProfilesToMongo(userProfiles []ExternalUsers, uid uuid.UUID, tenant int
 		tempProfile := userProfiles[i];
 		// check profile is existing
 		result := ExternalUsers{}
-		err = c.Find(bson.M{"thirdpartyreference": tempProfile.thirdpartyreference,"tenant":tenant,"company":company}).One(&result)
+		err = c.Find(bson.M{"ThirdPartyReference": tempProfile.ThirdPartyReference,"tenant":tenant,"company":company}).One(&result)
 
 		if err != nil {
 			switch err {
@@ -81,22 +81,22 @@ func SaveProfilesToMongo(userProfiles []ExternalUsers, uid uuid.UUID, tenant int
 				fmt.Println(err)
 			}
 		}else {
-			colQuerier := bson.M{"thirdpartyreference": tempProfile.thirdpartyreference}
+			colQuerier := bson.M{"ThirdPartyReference": tempProfile.ThirdPartyReference}
 			err = c.Update(colQuerier, tempProfile)
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
 
-		/*if ( result.thirdpartyreference == "") {
-			//result.thirdpartyreference == "" ||
+		/*if ( result.ThirdPartyReference == "") {
+			//result.ThirdPartyReference == "" ||
 			err = c.Insert(userProfiles[i])
 			//err = c.Insert(&ExternalUsers{userProfiles.Title, userProfiles.Firstname, userProfiles.Lastname, userProfiles.Gender, userProfiles.Name, userProfiles.Phone, userProfiles.Email, userProfiles.Locale, userProfiles.Address, userProfiles.Tags})
 			if err != nil {
 				fmt.Println(err)
 			}
 		} else {
-			colQuerier := bson.M{"thirdpartyreference": tempProfile.thirdpartyreference}
+			colQuerier := bson.M{"ThirdPartyReference": tempProfile.ThirdPartyReference}
 			//change := bson.M{"$set": bson.M{"phone": "+86 99 8888 7777", "timestamp": time.Now()}}
 			err = c.Update(colQuerier, tempProfile)
 			if err != nil {
